@@ -56,7 +56,7 @@ class PV(object):
                'upper_warning_limit', 'upper_ctrl_limit', 'lower_ctrl_limit')
 
     def __init__(self, pvname, callback=None, form='native',
-                 verbose=False, auto_monitor=None,
+                 verbose=False, auto_monitor=None, priority=0,
                  connection_callback=None,
                  connection_timeout=None):
 
@@ -120,7 +120,7 @@ class PV(object):
                                          mask=mask)
 
         else:
-            self._args['chid'] = ca.create_channel(self.pvname,
+            self._args['chid'] = ca.create_channel(self.pvname, priority=priority,
                                                    callback=self.__on_connect)
             self.chid = self._args['chid']
             

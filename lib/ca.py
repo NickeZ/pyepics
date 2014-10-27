@@ -718,7 +718,7 @@ def test_io():
 
 ## create channel
 @withCA
-def create_channel(pvname, connect=False, auto_cb=True, callback=None):
+def create_channel(pvname, connect=False, priority=0, auto_cb=True, callback=None):
     """ create a Channel for a given pvname
 
     creates a channel, returning the Channel ID ``chid`` used by other
@@ -793,12 +793,16 @@ def create_channel(pvname, connect=False, auto_cb=True, callback=None):
     conncb = 0
     if auto_cb:
         conncb = _CB_CONNECT
+    if priority >= 0 and priority < 100:
+        prio = priority
+    else:
+        prio = 0
     if entry.get('chid', None) is not None:
         # already have or waiting on a chid
         chid = _cache[ctx][pvname]['chid']
     else:
         chid = dbr.chid_t()
-        ret = libca.ca_create_channel(pvn, conncb, 0, 0,
+        ret = libca.ca_create_channel(pvn, conncb, 0, prio,
                                       ctypes.byref(chid))
         PySEVCHK('create_channel', ret)
         entry['chid'] = chid
